@@ -31,7 +31,9 @@ router.get('/', async ctx => {
   return ctx.redirect(`https://slack.com/oauth/authorize?${params}`)
 })
 router.get('/callback', checkAuthentication('slack'), async ctx => {
+  if (!ctx.query.state) throw unauthorized('Invalid state.')
   const payload = await verifyJWT(ctx.query.state)
+  if (payload.type !== 'login') throw unauthorized('Invalid state. Only login tokens can be used.')
   const user = ctx.state.user
   const token = await user.generateJWT('authentication')
   if (payload.url) return ctx.redirect(`${payload.url}?token=${token}`)
