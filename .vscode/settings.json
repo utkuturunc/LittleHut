@@ -1,0 +1,33 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/dist": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/ts-node-cache": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/bower_components": true,
+    "**/ts-node-cache": true,
+    "src/render": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": false,
+  "prettier.typescriptEnable": ["typescript"],
+  "prettier.printWidth": 120,
+  "prettier.trailingComma": "none",
+  "prettier.singleQuote": true,
+  "prettier.useTabs": false,
+  "prettier.semi": false,
+  "flow.enabled": false
+}

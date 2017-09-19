@@ -1,0 +1,21 @@
+version: '2'
+services:
+  server:
+    build: .
+    volumes:
+      - "./:/app"
+    environment:
+      - DATABASE_URL=mysql://dbuser:dbpw@database:3306/dbname
+    ports:
+      - "2000:2000"
+    links:
+      - database
+  database:
+    image: mysql:5.7.17
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=dbpw
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=dbpw
+      - MYSQL_DATABASE=dbname
