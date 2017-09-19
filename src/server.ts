@@ -39,10 +39,6 @@ app
   .use(etag())
   .use(compress())
   .use(session(sessionConfig, app))
-  // .use((ctx, next) => {
-  //   ctx.session = null
-  //   return next()
-  // })
   .use(
     convert(
       KoaBetterBody({
@@ -55,7 +51,6 @@ app
   .use(passport.initialize())
   .use(passport.session())
   .use(mount('/public', serve(__dirname + '/public')))
-  // .use(passport.authenticate('local'))
   .use(router.routes())
   .use(
     router.allowedMethods({
@@ -64,7 +59,7 @@ app
       methodNotAllowed: () => methodNotAllowed()
     })
   )
-  .listen(2000, async () => {
+  .listen(config.get('port'), async () => {
     // console.log(router.stack)
     await Model.knex().migrate.latest()
     console.log('listening')

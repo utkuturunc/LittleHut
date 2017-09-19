@@ -90,6 +90,12 @@ const conf = convict({
     format: String,
     default: null,
     env: 'DATABASE_URL'
+  },
+  port: {
+    doc: 'Port',
+    format: 'int',
+    default: 80,
+    env: 'PORT'
   }
 })
 

@@ -1,21 +1,24 @@
 {
-  "name": "meydan-server",
+  "name": "littlehut-server",
   "version": "1.0.0",
-  "main": "/dist/index.js",
+  "main": "/dist/server.js",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run watch",
+    "install": "npm run build",
+    "development": "PORT=2000 npm run build && npm run watch",
     "build": "npm run build-ts && npm run tslint && npm run copy-static-assets",
-    "serve": "nodemon dist/server.js",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve\"",
+    "start": "nodemon dist/server.js",
+    "watch":
+      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve\"",
     "test": "jest --forceExit",
-    "build-ts": "tsc",
-    "watch-ts": "tsc -w",
+    "build-ts": "./node_modules/.bin/tsc",
+    "watch-ts": "./node_modules/.bin/tsc -w",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug":
+      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",
@@ -39,7 +42,6 @@
     "@types/uuid": "^3.4.2",
     "concurrently": "^3.5.0",
     "jest": "^21.1.0",
-    "nodemon": "^1.12.1",
     "shelljs": "^0.7.8",
     "ts-jest": "^21.0.1",
     "tslint": "^5.7.0",
@@ -68,31 +70,31 @@
     "koa2-swagger-ui": "^2.5.11",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "mysql": "^2.14.1",
+    "nodemon": "^1.12.1",
     "objection": "^0.8.9",
     "passport-azure-ad-oauth2": "^0.0.4",
     "passport-jwt": "^3.0.0",
     "passport-local": "^1.0.0",
     "passport-oauth2": "^1.4.0",
+    "pg": "^7.3.0",
     "qs": "^6.5.1",
     "source-map-support": "^0.4.18",
     "swagger-jsdoc": "^1.9.7",
     "uuid": "^3.1.0"
   },
+  "engines": {
+    "node": "^8.5.0",
+    "yarn": "^1.0.0"
+  },
   "jest": {
     "globals": {
       "__TS_CONFIG__": "tsconfig.json"
     },
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
+    "moduleFileExtensions": ["ts", "js"],
     "transform": {
       "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
     },
-    "testMatch": [
-      "**/test/**/*.test.(ts|js)"
-    ],
+    "testMatch": ["**/test/**/*.test.(ts|js)"],
     "testEnvironment": "node"
   }
 }

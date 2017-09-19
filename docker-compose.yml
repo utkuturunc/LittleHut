@@ -5,17 +5,17 @@ services:
     volumes:
       - "./:/app"
     environment:
-      - DATABASE_URL=mysql://dbuser:dbpw@database:3306/dbname
+      - DATABASE_URL=postgres://dbuser:dbpw@database:5432/dbname
     ports:
       - "2000:2000"
     links:
       - database
   database:
-    image: mysql:5.7.17
+    image: postgres:9.6.5
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=dbpw
-      - MYSQL_USER=dbuser
-      - MYSQL_PASSWORD=dbpw
-      - MYSQL_DATABASE=dbname
+      - POSTGRES_PASSWORD=dbpw
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=dbpw
+      - POSTGRES_DB=dbname

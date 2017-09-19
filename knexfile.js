@@ -3,7 +3,7 @@
 module.exports = {
   development: {
     client: 'mysql',
-    connection: process.env.DATABASE_URL || 'mysql://dbuser:dbpw@localhost:3306/dbname'
+    connection: process.env.DATABASE_URL || 'postgres://dbuser:dbpw@database:5432/dbname'
   },
 
   staging: {
