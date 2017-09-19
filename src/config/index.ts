@@ -22,6 +22,10 @@ const conf = convict({
       format: String,
       default: null,
       env: 'SLACK_CLIENT_SECRET'
+    },
+    scope: {
+      format: Array,
+      default: ['identity.basic', 'identity.email']
     }
   },
   microsoft: {

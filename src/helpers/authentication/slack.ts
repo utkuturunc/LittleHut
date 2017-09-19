@@ -21,7 +21,7 @@ export const slackStrategy = new OAuth2Strategy(
     clientID: config.get('slack.clientID'),
     clientSecret: config.get('slack.clientSecret'),
     callbackURL: `${config.get('domain')}/api/auth/slack/callback`,
-    scope: ['identity.basic', 'identity.email'],
+    scope: config.get('slack.scope'),
     scopeSeperator: ','
   },
   (

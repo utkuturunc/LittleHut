@@ -12,12 +12,12 @@ services:
       - "2000:2000"
     links:
       - database
+    command: yarn run development
   database:
     image: postgres:9.6.5
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=dbpw
       - POSTGRES_USER=dbuser
       - POSTGRES_PASSWORD=dbpw
       - POSTGRES_DB=dbname

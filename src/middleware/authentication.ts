@@ -29,6 +29,7 @@ export const checkAuthentication: (strategy: string) => Middleware = strategy =>
     } else {
       if (user === true) throw new Error('User cannot be true')
       if (user) {
+        ctx.state.user = user
         return user.generateJWT('authentication').then(token => {
           return next()
         })

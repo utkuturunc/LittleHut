@@ -1,3 +1,4 @@
+import { sign, SignOptions, verify } from 'jsonwebtoken'
 import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt'
 import { config } from '../../config'
 import { User } from '../../entities'
@@ -18,3 +19,37 @@ export const jwtStrategy = new JWTStrategy(jwtOptions, (payload, done) => {
     })
     .catch(err => done(err))
 })
+
+export const createJWT = (payload: any, options?: SignOptions) =>
+  new Promise((resolve, reject) => {
+    const newOptions = options ? options : {}
+    sign(
+      payload,
+      config.get('jwt.secret'),
+      {
+        issuer: config.get('jwt.issuer'),
+        audience: config.get('jwt.audience'),
+        ...newOptions
+      },
+      (err, token) => {
+        if (err) return reject(err)
+        return resolve(token)
+      }
+    )
+  })
+
+export const verifyJWT = (jwt: string): any =>
+  new Promise((resolve, reject) => {
+    verify(
+      jwt,
+      config.get('jwt.secret'),
+      {
+        issuer: config.get('jwt.issuer'),
+        audience: config.get('jwt.audience')
+      },
+      (err, payload) => {
+        if (err) return reject(err)
+        return resolve(payload)
+      }
+    )
+  })
