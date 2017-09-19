@@ -6,6 +6,8 @@ services:
       - "./:/app"
     environment:
       - DATABASE_URL=postgres://dbuser:dbpw@database:5432/dbname
+      - DOMAIN=http://localhost:2000
+      - PORT=2000
     ports:
       - "2000:2000"
     links:

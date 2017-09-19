@@ -96,6 +96,12 @@ const conf = convict({
     format: 'int',
     default: 80,
     env: 'PORT'
+  },
+  domain: {
+    doc: 'Domain',
+    format: String,
+    default: null,
+    env: 'DOMAIN'
   }
 })
 

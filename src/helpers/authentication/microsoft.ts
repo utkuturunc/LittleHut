@@ -8,7 +8,7 @@ export const microsoftStrategy = new MicrosoftStrategy(
   {
     clientID: config.get('microsoft.clientID'),
     clientSecret: config.get('microsoft.clientSecret'),
-    callbackURL: 'http://localhost:2000/api/auth/microsoft/callback',
+    callbackURL: `${config.get('domain')}/api/auth/microsoft/callback`,
     tenant: 'common',
     resource: 'https://graph.windows.net'
   },
