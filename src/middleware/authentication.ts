@@ -38,3 +38,5 @@ export const checkAuthentication: (strategy: string) => Middleware = strategy =>
     }
   })(ctx, next)
 }
+
+export const isAuthenticated = checkAuthentication('jwt')

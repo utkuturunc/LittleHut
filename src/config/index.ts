@@ -13,6 +13,11 @@ const conf = convict({
     env: 'NODE_ENV'
   },
   slack: {
+    accessToken: {
+      format: String,
+      default: null,
+      env: 'SLACK_ACCESS_TOKEN'
+    },
     clientID: {
       format: String,
       default: null,
@@ -25,7 +30,7 @@ const conf = convict({
     },
     scope: {
       format: Array,
-      default: ['identity.basic', 'identity.email']
+      default: ['identity.basic', 'identity.email', 'identity.avatar']
     }
   },
   microsoft: {
@@ -48,7 +53,7 @@ const conf = convict({
     },
     expiresIn: {
       format: String,
-      default: '1h',
+      default: '90 days',
       env: 'JWT_EXPIRATION'
     },
     issuer: {
