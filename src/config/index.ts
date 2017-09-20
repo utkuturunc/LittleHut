@@ -30,7 +30,7 @@ const conf = convict({
     },
     scope: {
       format: Array,
-      default: ['identity.basic', 'identity.email', 'identity.avatar']
+      default: ['identity.basic', 'identity.email']
     }
   },
   microsoft: {
