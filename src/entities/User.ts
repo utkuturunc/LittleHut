@@ -137,7 +137,7 @@ export class User extends BaseModel implements IUserConstructor {
   $formatJson(json: any) {
     json = super.$formatJson(json)
     json.password = undefined
-    json.isComplete = json.isComplete === 1 || json.isComplete === true
+    json.isComplete = json.isComplete === 1 ? true : json.isComplete
     return json
   }
 

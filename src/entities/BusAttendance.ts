@@ -118,7 +118,7 @@ export class BusAttendance extends BaseModel implements IBusAttendanceConstructo
   $formatJson(json: any) {
     const date = json.date && json.date.format('YYYY-MM-DD')
     json = super.$formatJson(json)
-    json.isAttending = json.isAttending === 1 || json.isAttending === true
+    json.isAttending = json.isAttending === 1 ? true : json.isAttending
     json.date = date
     return json
   }

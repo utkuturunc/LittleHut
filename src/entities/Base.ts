@@ -54,7 +54,7 @@ export class BaseModel extends Model implements IBase {
     const createdAt = json.createdAt && json.createdAt.format()
     const updatedAt = json.updatedAt && json.updatedAt.format()
     json = super.$formatJson(json)
-    json.isActive = json.isActive === 1 || json.isActive === true
+    json.isActive = json.isActive === 1 ? true : json.isActive
     json.createdAt = createdAt
     json.updatedAt = updatedAt
     return json
