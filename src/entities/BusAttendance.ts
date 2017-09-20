@@ -10,6 +10,34 @@ export interface IBusAttendanceConstructor {
   isAttending: boolean
 }
 
+/**
+ * @swagger
+ * definitions:
+ *   BusAttendance:
+ *     type: object
+ *     required:
+ *       - date
+ *       - isAttending
+ *     properties:
+ *       date:
+ *         type: string
+ *         format: date
+ *       isAttending:
+ *         type: boolean
+ *       id:
+ *         type: string
+ *       userID:
+ *         type: string
+ *       createdAt:
+ *         type: string
+ *         format: dateTime
+ *       updatedAt:
+ *         type: string
+ *         format: dateTime
+ *       isActive:
+ *         type: boolean
+ */
+
 export class BusAttendance extends BaseModel implements IBusAttendanceConstructor {
   static tableName = 'busAttendance'
   static jsonSchema = {

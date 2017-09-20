@@ -31,6 +31,7 @@ export const checkAuthentication: (strategy: string) => Middleware = strategy =>
       if (user) {
         ctx.state.user = user
         return user.generateJWT('authentication').then(token => {
+          ctx.set('X-Refresh-Token', token)
           return next()
         })
       }

@@ -8,8 +8,7 @@
     "development": "npm run build && npm run watch",
     "build": "npm run build-ts && npm run tslint && npm run copy-static-assets",
     "start": "node -r ./node_modules/dotenv/config ./node_modules/.bin/nodemon dist/server.js",
-    "watch":
-      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run start\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run start\"",
     "test": "jest --forceExit",
     "build-ts": "./node_modules/.bin/tsc",
     "watch-ts": "./node_modules/.bin/tsc -w",
@@ -17,10 +16,10 @@
     "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug":
-      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/bcrypt": "^1.0.0",
     "@types/boom": "^4.3.7",
     "@types/convict": "^4.0.1",
@@ -92,11 +91,16 @@
     "globals": {
       "__TS_CONFIG__": "tsconfig.json"
     },
-    "moduleFileExtensions": ["ts", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
     },
-    "testMatch": ["**/test/**/*.test.(ts|js)"],
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
     "testEnvironment": "node"
   }
 }

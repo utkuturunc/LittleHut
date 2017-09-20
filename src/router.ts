@@ -16,7 +16,9 @@ const swaggerSpec = swaggerJSDoc({
   },
   apis: [
     path.resolve(__dirname, './controllers/**/*.ts'),
-    path.resolve(__dirname, './controllers/**/*.ts'),
+    path.resolve(__dirname, './controllers/**/*.js'),
+    path.resolve(__dirname, './entities/**/*.ts'),
+    path.resolve(__dirname, './entities/**/*.js'),
     path.resolve(__dirname, './models/**/*.ts'),
     path.resolve(__dirname, './models/**/*.js')
   ]
@@ -31,9 +33,9 @@ router.get('/api-docs.json', ctx => {
   ctx.body = swaggerSpec
 })
 router.get(
-  '/docs',
+  '/',
   koaSwagger({
-    routePrefix: `${API_V1}/docs`,
+    routePrefix: `${API_V1}/`,
     swaggerOptions: {
       spec: swaggerSpec
     }
