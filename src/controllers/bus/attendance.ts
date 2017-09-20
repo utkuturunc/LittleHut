@@ -53,15 +53,16 @@ const pendingFilter = (nonPendingList: string[]) => (user: User) => !includes(no
 
 router.get('/attendance', async (ctx: Context) => {
   const attendance = await BusAttendance.todaysAttendance()
-  const statuses = mapKeys(groupBy(attendance), key => (key ? 'attending' : 'notAttending'))
-
+  const statuses = mapKeys(
+    groupBy(attendance, 'isAttending'),
+    (value, key) => (key.toString() === 'true' ? 'attending' : 'notAttending')
+  )
   // const usersFromSlack = await slackClient.getUserList()
   // const slackData = await Slack.list()
   const users = await User.list()
 
   const attendingIDs = statuses.attending ? statuses.attending.map(element => element.userID) : []
   const notAttendingIDs = statuses.notAttending ? statuses.notAttending.map(element => element.userID) : []
-
   const attending = users.filter(statusFilter(attendingIDs))
   const notAttending = users.filter(statusFilter(notAttendingIDs))
   const pending = users.filter(pendingFilter([...attendingIDs, ...notAttendingIDs]))
