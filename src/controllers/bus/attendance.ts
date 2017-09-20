@@ -3,7 +3,9 @@ import * as KoaRouter from 'koa-router'
 import { groupBy, includes, mapKeys } from 'lodash'
 import * as moment from 'moment'
 import { User } from '../../entities'
+// import { User, Slack } from '../../entities'
 import { BusAttendance } from '../../entities/BusAttendance'
+// import { slackClient } from '../../clients'
 
 export const router = new KoaRouter()
 
@@ -11,7 +13,7 @@ export const router = new KoaRouter()
  * @swagger
  * /bus/attendance:
  *   get:
- *     description: Returns the attendance lists
+ *     description: Returns the attendance list
  *     parameters:
  *       - name: Authorization
  *         in: header
@@ -52,6 +54,9 @@ const pendingFilter = (nonPendingList: string[]) => (user: User) => !includes(no
 router.get('/attendance', async (ctx: Context) => {
   const attendance = await BusAttendance.todaysAttendance()
   const statuses = mapKeys(groupBy(attendance), key => (key ? 'attending' : 'notAttending'))
+
+  // const usersFromSlack = await slackClient.getUserList()
+  // const slackData = await Slack.list()
   const users = await User.list()
 
   const attendingIDs = statuses.attending ? statuses.attending.map(element => element.userID) : []

@@ -1,9 +1,22 @@
 language: node_js
+branches:
+  only:
+  - master
 node_js:
- - "8.5.0"
+- 8.5.0
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.0.2
-  - export PATH="$HOME/.yarn/bin:$PATH"
+- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.0.2
+- export PATH="$HOME/.yarn/bin:$PATH"
 before_script:
-  - yarn build
+- yarn build
 cache: yarn
+deploy:
+  provider: heroku
+  api_key:
+    secure: wuDUctHiiz391sJZmdiBdR2yLojI+fkpJhwt9T+TyshdAdCIx2UyPFDmsPi3EeUl+XGRbam7b4LCdlYX5eO+XUlvWBSI0jTqg87kNyIEWtrChSZ/dqvg26/Ilnu0UerKIRXIqgBUtIEppsYl7uk8WkZJP9LPZaRybelbU+s6z+zyddmku/RCq3clygvQCf2gyFzXaMznMLsGrCntCVmG2V1ViqALsl+zTec+SyabGABw16OvjJMOpoOID4heEMOdH+HwT1UsNnlRt1ct2ez1svYIBmQZuKUoDGtJgGyXLbzpjaM1Z9HahmLVNSS29pADvdqSpCIgKSuSJrYTcEYsdXlfbiT/QmYWNnfvcKz/aPsemsURbt6RC8L3WfjJCoUMNXHzLQ8/V2Stc+Ay5FXKdy5u58OSS7AEf2C52x3G/l46L+4eZVMrW65685mZs4+HullgLeJWNJ0Bj7y/om04Vtkmk28R7nJ5vBbrY35biJkpdleQpjR2Z1XXCyP/3Elbl1MDekD3LyfOnkgtcIZdQgBhaNX18TuL6w4egMkRmo5KfUA5h6RSxf4kJxWR6BGUc+e8o0qYAY/2Rmx+xkXarntNifOFn/+7IP/CFJRIBBrW9FkdKuNaab0d09jHAg+A8224ywYSCB7xbqdEyvUTIBY2buhxeiiBbFTzjwnaIQ8=
+  app: littlehut
+  on:
+    repo: utkuturunc/LittleHut
+notifications:
+  slack:
+    secure: Nh4An5j+Qp0KaH5oZxh/WLsmLolh6jDu6VkTFudtu9dLmvX5vLke9Y6AFJ1pvEI+KcR6jVrLxqCXq4I1c25736emB0VYlH6wv3vXDgFu0HWDsxYlixAQKNJaAuGt8XqlJSdLRESLrRzftdETpQfJS8607gOC2QglLylt84iiekXQVEhAWFWByWqSleCFH83s6e1VaFpuPicSDAnnllC20kVau0Lm8uQ8VuOK1Ua6DvycjBd1NZmOYIS2DQKu/iChbF1zxcPQzhxbTxa708YJNX65Sdln4hpbyi1m9JbfQOgS6FMTerUiatLeFH7lA2R6Ukh8sPv46K7rLbHpoJimRdLhbYQcM4Cr9EAxQz2PEJpVfUTuOV5owMmT+1ZKMYUGWZb6i/ssSNO2/bqU1WFqo2xzwQtnoCBu3yETHIUJTuI+wdxDeKdKSz642n2YIKSkaH9c7wLNP3bIHgM5EteXt8IVPOPyvDaJNtWK0zliJ4E+LRhaCDcin9se+k5Yd8DmXBGfQy7ZfX4LfmnmOeiadS5IaZpSBz+ZwU2jWfzk+QlDnG0UTHJCxbhDlvnrlim1hmRyWstzf4r5nXarffCU9TF3NuOLn7HnJ+/dkCGqw57+K8VYXGlkTxbJJREF97lnZ2tU015IzbY9NXKWVpKheRlHUVDlnNt72xDUP6ctJvw=

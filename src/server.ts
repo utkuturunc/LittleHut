@@ -14,6 +14,7 @@ import { config } from './config'
 import { Model } from './config/database'
 import { passport } from './helpers/authentication'
 import { errorHandler } from './middleware/error'
+import { responseInterceptor } from './middleware/response'
 import { router } from './router'
 
 const sessionConfig = {
@@ -29,6 +30,7 @@ const app = new Koa()
 app.keys = [config.get('session.secret')]
 app
   .use(errorHandler)
+  .use(responseInterceptor)
   .use(
     helmet({
       noSniff: false,

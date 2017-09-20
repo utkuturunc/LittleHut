@@ -25,20 +25,29 @@ export const errorHandler: Middleware = async (ctx: Context, next: Function) => 
       const output = handleBoomError(boomError)
       if (environment === 'development') console.error(output.stack)
       ctx.status = output.status
-      ctx.body = output.body
+      ctx.body = {
+        status: false,
+        result: output.body
+      }
     } else {
       if (environment === 'development') {
         ctx.status = 500
         ctx.body = {
-          error,
-          stack: error.stack
+          status: false,
+          result: {
+            error: error.message,
+            stack: error.stack
+          }
         }
       } else {
         const boomError: BoomError = unexpected()
         const output = handleBoomError(boomError)
         if (environment === 'development') console.error(output.stack)
         ctx.status = output.status
-        ctx.body = output.body
+        ctx.body = {
+          status: false,
+          result: output.body
+        }
       }
     }
   }
