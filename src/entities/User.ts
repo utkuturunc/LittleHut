@@ -48,8 +48,8 @@ export class User extends BaseModel implements IUserConstructor {
       relation: BaseModel.HasOneRelation,
       modelClass: Slack as any,
       join: {
-        to: 'users.id',
-        from: 'slack.userID'
+        from: 'users.id',
+        to: 'slack.userID'
       }
     },
     microsoft: {
