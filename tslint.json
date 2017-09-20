@@ -13,7 +13,8 @@
       "severity": "warning"
     },
     "arrow-parens": [true, "ban-single-arg-parens"],
-    "member-access": [false]
+    "member-access": [false],
+    "no-unused-variable": true
   },
   "rulesDirectory": []
 }

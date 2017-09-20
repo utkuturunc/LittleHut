@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { Strategy as OAuth2Strategy } from 'passport-oauth2'
 import { config } from '../../config'
-import { Slack, User } from '../../entities'
+import { User } from '../../entities'
 
 OAuth2Strategy.prototype.userProfile = (accessToken: string, done: (err: any, user?: any) => any) => {
   return axios

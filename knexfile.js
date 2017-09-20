@@ -2,7 +2,7 @@
 
 module.exports = {
   development: {
-    client: 'mysql',
+    client: 'pg',
     connection: process.env.DATABASE_URL || 'postgres://dbuser:dbpw@database:5432/dbname'
   },
 

@@ -1,13 +1,8 @@
 import { unauthorized } from 'boom'
-import { sign } from 'jsonwebtoken'
-import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
 import * as qs from 'qs'
 import { config } from '../../config/index'
-import { User } from '../../entities'
-import { passport } from '../../helpers/authentication'
 import { createJWT, verifyJWT } from '../../helpers/authentication/jwt'
-import { ok } from '../../helpers/response/success'
 import { checkAuthentication } from '../../middleware/authentication'
 
 export const router = new KoaRouter()

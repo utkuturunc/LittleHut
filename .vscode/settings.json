@@ -24,7 +24,7 @@
   "editor.formatOnSave": true,
   "editor.formatOnType": false,
   "prettier.typescriptEnable": ["typescript"],
-  "prettier.printWidth": 120,
+  "prettier.printWidth": 115,
   "prettier.trailingComma": "none",
   "prettier.singleQuote": true,
   "prettier.useTabs": false,

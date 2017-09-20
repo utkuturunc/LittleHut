@@ -1,8 +1,7 @@
-import axios from 'axios'
 import * as jwt from 'jsonwebtoken'
 import { Strategy as MicrosoftStrategy } from 'passport-azure-ad-oauth2'
 import { config } from '../../config'
-import { Slack, User } from '../../entities'
+import { User } from '../../entities'
 
 export const microsoftStrategy = new MicrosoftStrategy(
   {

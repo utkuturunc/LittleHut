@@ -1,7 +1,3 @@
-import { groupBy } from 'lodash'
-import * as moment from 'moment'
-import { Moment } from 'moment'
-import { ModelOptions } from 'objection'
 import { BaseModel } from './Base'
 
 export interface ISlackConstructor {

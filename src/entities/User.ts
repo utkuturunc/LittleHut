@@ -1,12 +1,9 @@
 import * as jwt from 'jsonwebtoken'
-import { groupBy } from 'lodash'
-import * as moment from 'moment'
-import { Moment } from 'moment'
-import { ModelOptions } from 'objection'
 import { config } from '../config'
 import { BaseModel } from './Base'
+import { BusAttendance } from './BusAttendance'
 import { Microsoft } from './Microsoft'
-import { ISlackConstructor, Slack } from './Slack'
+import { Slack } from './Slack'
 
 export interface IUserConstructor {
   name: string
@@ -61,6 +58,14 @@ export class User extends BaseModel implements IUserConstructor {
       join: {
         from: 'users.id',
         to: 'microsoft.userID'
+      }
+    },
+    attendance: {
+      relation: BaseModel.HasManyRelation,
+      modelClass: BusAttendance as any,
+      join: {
+        from: 'users.id',
+        to: 'busAttendance.userID'
       }
     }
   }

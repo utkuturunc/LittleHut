@@ -18,7 +18,7 @@ import { router } from './router'
 
 const sessionConfig = {
   key: config.get('session.key'),
-  maxAge: 86400000,
+  maxAge: 90 * 24 * 60 * 60 * 1000, // 90 days
   overwrite: true,
   httpOnly: true,
   signed: true,

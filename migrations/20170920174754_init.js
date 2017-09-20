@@ -82,6 +82,30 @@ exports.up = function(knex, Promise) {
         .notNullable()
       table.boolean('isActive').notNullable()
     })
+    .createTable('busAttendance', function(table) {
+      table.uuid('id').primary()
+      table
+        .uuid('userID')
+        .references('id')
+        .inTable('users')
+        .notNullable()
+        .index()
+      table.boolean('isAttending').notNullable()
+      table
+        .string('date')
+        .defaultTo(knex.raw('now()'))
+        .notNullable()
+        .index()
+      table
+        .timestamp('createdAt', true)
+        .defaultTo(knex.raw('now()'))
+        .notNullable()
+      table
+        .timestamp('updatedAt', true)
+        .defaultTo(knex.raw('now()'))
+        .notNullable()
+      table.boolean('isActive').notNullable()
+    })
 }
 
 exports.down = function(knex, Promise) {
@@ -89,4 +113,5 @@ exports.down = function(knex, Promise) {
     .dropTableIfExists('users')
     .dropTableIfExists('slack')
     .dropTableIfExists('microsoft')
+    .dropTableIfExists('busAttendance')
 }
