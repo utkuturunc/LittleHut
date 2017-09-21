@@ -124,3 +124,19 @@ router.post('/attendance', async (ctx: Context) => {
     return
   }
 })
+
+router.get('/attendance/me', async (ctx: Context) => {
+  const user: User = ctx.state.user
+  const attendance = await BusAttendance.getUserResponseForToday(user)
+
+  if (!attendance) {
+    ctx.body = {
+      status: 'pending'
+    }
+    return
+  }
+
+  ctx.body = {
+    status: attendance.isAttending ? 'attending' : 'notAttending'
+  }
+})
