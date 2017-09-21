@@ -35,7 +35,7 @@ router.get('/api-docs.json', ctx => {
 router.get(
   '/',
   koaSwagger({
-    routePrefix: `${API_V1}/`,
+    routePrefix: false,
     swaggerOptions: {
       spec: swaggerSpec
     }
