@@ -88,6 +88,10 @@ export class User extends BaseModel implements IUserConstructor {
     return await User.query()
   }
 
+  static getActiveUsers() {
+    return User.query().where('isActive', '=', true)
+  }
+
   static async associateSlack(user: IUserConstructor, slack: ISlackInput) {
     return User.createAssociator<ISlackInput>('slack', Slack.insertIfNotExistsBySlackIDs)(user, slack)
   }

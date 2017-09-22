@@ -4,17 +4,25 @@
  *   Attendee:
  *     type: object
  *     required:
+ *       - id
  *       - name
- *       - profilePicture
+ *       - email
+ *       - avatar
  *     properties:
+ *       id:
+ *         type: string
  *       name:
  *         type: string
- *       profilePicture:
+ *       email:
+ *         type: string
+ *       avatar:
  *         type: string
  *         format: url
  */
 
 export interface Attendee {
+  id: string
   name: string
-  profilePicture: string
+  email: string
+  avatar: string | null
 }

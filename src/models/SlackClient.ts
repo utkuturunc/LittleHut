@@ -7,6 +7,10 @@ export interface ISlackClientConstructor {
 }
 
 export class SlackClient {
+  static filterActiveUsers(users: any[]) {
+    return users.filter(user => !user.deleted && !user.is_restricted && !user.is_ultra_restricted && !user.is_bot)
+  }
+
   token: string
   private api: AxiosInstance
 
@@ -26,13 +30,22 @@ export class SlackClient {
     this.api.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
   }
 
-  getUserList() {
-    return this.callMethod('users.list', 'members')
+  async getAllUsers(accumulated: any[] = [], cursor?: string): Promise<any[]> {
+    const response = await this.callMethod('users.list', { cursor })
+    if (response.response_metadata && response.response_metadata.next_cursor) {
+      return await this.getAllUsers(accumulated, response.response_metadata.next_cursor)
+    }
+    return [...accumulated, ...response.members]
   }
 
-  private async callMethod(method: string, outputKey: string, data?: any) {
+  async getAllActiveUsers() {
+    const users = await this.getAllUsers()
+    return SlackClient.filterActiveUsers(users)
+  }
+
+  private async callMethod(method: string, data?: any) {
     const response = await this.api.post(method, data)
     if (!response.data.ok) throw new Error(response.data.error)
-    return response.data[outputKey]
+    return response.data
   }
 }

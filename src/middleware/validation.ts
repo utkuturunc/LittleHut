@@ -3,7 +3,10 @@ import { Context, Middleware } from 'koa'
 import { unexpected } from '../helpers/response/failure'
 import { ajv } from '../helpers/validation'
 
-export const validateQuery = (schema: string, message?: string): Middleware => async (ctx: Context, next: Function) => {
+export const validateQuery = (schema: string, message?: string): Middleware => async (
+  ctx: Context,
+  next: Function
+) => {
   const validate = ajv.getSchema(schema)
   if (!validate) throw unexpected('Wrong schema name')
   const isValid = validate(ctx.query)
@@ -11,7 +14,10 @@ export const validateQuery = (schema: string, message?: string): Middleware => a
   await next()
 }
 
-export const validateBody = (schema: string, message?: string): Middleware => async (ctx: Context, next: Function) => {
+export const validateBody = (schema: string, message?: string): Middleware => async (
+  ctx: Context,
+  next: Function
+) => {
   const validate = ajv.getSchema(schema)
   if (!validate) throw unexpected('Wrong schema name')
   const isValid = validate(ctx.request.body)

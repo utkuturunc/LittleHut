@@ -5,6 +5,6 @@ import { slackClient } from '../../clients'
 export const router = new KoaRouter()
 
 router.get('/', async (ctx: Context) => {
-  const users = await slackClient.getUserList()
+  const users = await slackClient.getAllUsers()
   ctx.body = users
 })
