@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title></title>
+</head>
+
+<body>
+
+  SSE
+
+  <script>
+    const source = new EventSource('/api/subscribe');
+
+
+    // source.addEventListener('message', function (e) {
+    //   console.log(e)
+    // }, false)
+
+    source.addEventListener('deneme', function (e) {
+      console.log(e)
+    }, false)
+
+    source.onmessage = function () {
+      console.log('aa')
+      // console.log(e)
+    }
+
+    source.onopen = function () {
+      console.log('open')
+    }
+
+    source.onerror = function (e) {
+      console.log("EventSource failed.", e);
+    };
+
+    // source.addEventListener('open', function (e) {
+    //   console.log("Connection was opened")
+    // }, false)
+
+    // source.addEventListener('error', function (e) {
+    //   if (e.readyState == EventSource.CLOSED) {
+    //     console.log("Connection was closed")
+    //   }
+    // }, false)
+  </script>
+</body>
+
+</html>

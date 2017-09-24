@@ -6,8 +6,11 @@ import { slackClient } from '../../clients'
 import { Slack, User } from '../../entities'
 import { BusAttendance } from '../../entities/BusAttendance'
 import { Attendee } from '../../models/misc'
+import { subscription } from '../../helpers/subscription'
 
-export const router = new KoaRouter()
+export const router = new KoaRouter({
+  prefix: '/attendance'
+})
 
 /**
  * @swagger
@@ -57,7 +60,7 @@ interface AvatarData {
   avatar: string
 }
 
-router.get('/attendance', async (ctx: Context) => {
+const getAttendance = async () => {
   const attendance = await BusAttendance.todaysAttendance()
   const statuses = mapKeys(
     groupBy(attendance, 'isAttending'),
@@ -95,12 +98,15 @@ router.get('/attendance', async (ctx: Context) => {
   const attending = users.filter(statusFilter(attendingIDs))
   const notAttending = users.filter(statusFilter(notAttendingIDs))
   const pending = users.filter(pendingFilter([...attendingIDs, ...notAttendingIDs]))
-
-  ctx.body = {
+  return {
     attending,
     notAttending,
     pending
   }
+}
+
+router.get('/', async (ctx: Context) => {
+  ctx.body = await getAttendance()
 })
 
 /**
@@ -136,7 +142,7 @@ router.get('/attendance', async (ctx: Context) => {
  *         schema:
  *           $ref: '#/definitions/BusAttendance'
  */
-router.post('/attendance', async (ctx: Context) => {
+router.post('/', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
   const today = moment()
@@ -146,15 +152,19 @@ router.post('/attendance', async (ctx: Context) => {
 
   if (!attendance) {
     if (!user.id) throw new Error('Unexpected error')
-    ctx.body = await BusAttendance.create({ userID: user.id, isAttending, date: today })
+    const newAttendance = await BusAttendance.create({ userID: user.id, isAttending, date: today })
+    subscription.publish('userStatusUpdated', await getAttendance())
+    ctx.body = newAttendance
     return
   } else {
-    ctx.body = await BusAttendance.update({ ...attendance, isAttending })
+    const newAttendance = await BusAttendance.update({ ...attendance, isAttending })
+    subscription.publish('userStatusUpdated', await getAttendance())
+    ctx.body = newAttendance
     return
   }
 })
 
-router.get('/attendance/status', async (ctx: Context) => {
+router.get('/status', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
   ctx.body = {
@@ -162,7 +172,7 @@ router.get('/attendance/status', async (ctx: Context) => {
   }
 })
 
-router.get('/attendance/me', async (ctx: Context) => {
+router.get('/me', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
 
