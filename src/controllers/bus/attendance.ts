@@ -5,8 +5,8 @@ import * as moment from 'moment'
 import { slackClient } from '../../clients'
 import { Slack, User } from '../../entities'
 import { BusAttendance } from '../../entities/BusAttendance'
-import { Attendee } from '../../models/misc'
 import { subscription } from '../../helpers/subscription'
+import { Attendee } from '../../models/misc'
 
 export const router = new KoaRouter({
   prefix: '/attendance'
@@ -153,12 +153,12 @@ router.post('/', async (ctx: Context) => {
   if (!attendance) {
     if (!user.id) throw new Error('Unexpected error')
     const newAttendance = await BusAttendance.create({ userID: user.id, isAttending, date: today })
-    subscription.publish('userStatusUpdated', await getAttendance())
+    subscription.publish('userStatusUpdated', getAttendance())
     ctx.body = newAttendance
     return
   } else {
     const newAttendance = await BusAttendance.update({ ...attendance, isAttending })
-    subscription.publish('userStatusUpdated', await getAttendance())
+    subscription.publish('userStatusUpdated', getAttendance())
     ctx.body = newAttendance
     return
   }
