@@ -12,6 +12,20 @@ const conf = convict({
     default: 'development',
     env: 'NODE_ENV'
   },
+  bus: {
+    departure: {
+      hour: {
+        format: 'int',
+        default: 11,
+        env: 'BUS_DEPARTURE_HOUR'
+      },
+      minute: {
+        format: 'int',
+        default: 50,
+        env: 'BUS_DEPARTURE_MINUTE'
+      }
+    }
+  },
   slack: {
     accessToken: {
       format: String,

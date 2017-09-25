@@ -9,7 +9,7 @@ const API_V1 = '/api'
 const swaggerSpec = swaggerJSDoc({
   swaggerDefinition: {
     info: {
-      title: 'VoT Assistant',
+      title: 'Little Hut',
       version: '1.0',
       basePath: API_V1
     }

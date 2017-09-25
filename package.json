@@ -10,8 +10,7 @@
     "start": "npm run forever",
     "forever": "node -r ./node_modules/dotenv/config ./node_modules/.bin/forever \"./dist/server.js\"",
     "serve": "node -r ./node_modules/dotenv/config ./node_modules/.bin/nodemon ./dist/server.js",
-    "watch":
-      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve\"",
     "test": "jest --forceExit",
     "build-ts": "./node_modules/.bin/tsc",
     "watch-ts": "./node_modules/.bin/tsc -w",
@@ -19,8 +18,7 @@
     "copy-static-assets": "node copyStaticAssets.js",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug":
-      "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
   },
   "devDependencies": {
     "@types/ajv": "^1.0.0",
@@ -45,14 +43,15 @@
     "@types/qs": "^6.5.0",
     "@types/uuid": "^3.4.2",
     "concurrently": "^3.5.0",
-    "nodemon": "^1.12.1",
     "jest": "^21.1.0",
+    "nodemon": "^1.12.1",
     "shelljs": "^0.7.8",
     "ts-jest": "^21.0.1",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
   },
   "dependencies": {
+    "@types/node-schedule": "^1.2.0",
     "ajv": "^5.2.2",
     "axios": "^0.16.2",
     "bcrypt": "^1.0.3",
@@ -77,6 +76,7 @@
     "koa2-swagger-ui": "^2.5.11",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "node-schedule": "^1.2.5",
     "objection": "^0.8.9",
     "passport-azure-ad-oauth2": "^0.0.4",
     "passport-jwt": "^3.0.0",
@@ -96,11 +96,16 @@
     "globals": {
       "__TS_CONFIG__": "tsconfig.json"
     },
-    "moduleFileExtensions": ["ts", "js"],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)$": "./node_modules/ts-jest/preprocessor.js"
     },
-    "testMatch": ["**/test/**/*.test.(ts|js)"],
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
     "testEnvironment": "node"
   }
 }

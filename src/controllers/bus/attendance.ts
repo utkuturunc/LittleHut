@@ -1,16 +1,12 @@
 import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
-import { groupBy, includes, mapKeys } from 'lodash'
 import * as moment from 'moment'
-import { slackClient } from '../../clients'
-import { Slack, User } from '../../entities'
+import { User } from '../../entities'
 import { BusAttendance } from '../../entities/BusAttendance'
-import { subscription } from '../../helpers/subscription'
-import { Attendee } from '../../models/misc'
+import { subscription } from '../../singletons/subscription'
+import { getAttendance } from '../../utils/attendance'
 
-export const router = new KoaRouter({
-  prefix: '/attendance'
-})
+export const router = new KoaRouter()
 
 /**
  * @swagger
@@ -50,60 +46,6 @@ export const router = new KoaRouter({
  *               items:
  *                 $ref: '#/definitions/Attendee'
  */
-
-const statusFilter = (list: string[]) => (user: Attendee) => includes(list, user.id)
-const pendingFilter = (nonPendingList: string[]) => (user: Attendee) => !includes(nonPendingList, user.id)
-
-interface AvatarData {
-  slackUserID: string
-  slackTeamID: string
-  avatar: string
-}
-
-const getAttendance = async () => {
-  const attendance = await BusAttendance.todaysAttendance()
-  const statuses = mapKeys(
-    groupBy(attendance, 'isAttending'),
-    (value, key) => (key.toString() === 'true' ? 'attending' : 'notAttending')
-  )
-  const usersFromSlack = await slackClient.getAllActiveUsers()
-  const avatars = usersFromSlack.map<AvatarData>(user => ({
-    slackUserID: user.id,
-    slackTeamID: user.team_id,
-    avatar: user.profile.image_192
-  }))
-
-  const slackData = await Slack.list()
-
-  const activeUsers = await User.getActiveUsers()
-
-  const users = slackData.map<Attendee>(slack => {
-    const user = activeUsers.find(userData => userData.id === slack.userID)
-    if (!user) throw new Error('One to one relation must always find a user')
-    const avatarData = avatars.find(
-      avatarDataElement =>
-        avatarDataElement.slackTeamID === slack.slackTeamID && avatarDataElement.slackUserID === slack.slackUserID
-    )
-    if (!user.id) throw new Error('User was not initialized')
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      avatar: avatarData ? avatarData.avatar : null
-    }
-  })
-
-  const attendingIDs = statuses.attending ? statuses.attending.map(element => element.userID) : []
-  const notAttendingIDs = statuses.notAttending ? statuses.notAttending.map(element => element.userID) : []
-  const attending = users.filter(statusFilter(attendingIDs))
-  const notAttending = users.filter(statusFilter(notAttendingIDs))
-  const pending = users.filter(pendingFilter([...attendingIDs, ...notAttendingIDs]))
-  return {
-    attending,
-    notAttending,
-    pending
-  }
-}
 
 router.get('/', async (ctx: Context) => {
   ctx.body = await getAttendance()
@@ -164,7 +106,32 @@ router.post('/', async (ctx: Context) => {
   }
 })
 
-router.get('/status', async (ctx: Context) => {
+/**
+ * @swagger
+ * /bus/attendance/me:
+ *   get:
+ *     description: Returns the Attendance linked to current user
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         description: 'Value must be of format: Bearer token_comes_here'
+ *         required: true
+ *         schema:
+ *           type: string
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *         headers:
+ *           X-Refresh-Token:
+ *             description: New extended token
+ *             schema:
+ *               type: string
+ *         schema:
+ *           $ref: '#/definitions/BusAttendance'
+ */
+router.get('/me', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
   ctx.body = {
@@ -172,7 +139,36 @@ router.get('/status', async (ctx: Context) => {
   }
 })
 
-router.get('/me', async (ctx: Context) => {
+/**
+ * @swagger
+ * /bus/attendance/me/status:
+ *   get:
+ *     description: Returns the Attendance linked to current user
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         description: 'Value must be of format: Bearer token_comes_here'
+ *         required: true
+ *         schema:
+ *           type: string
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *         headers:
+ *           X-Refresh-Token:
+ *             description: New extended token
+ *             schema:
+ *               type: string
+ *         schema:
+ *           type: object
+ *           properties:
+ *              attendance:
+ *                type: string
+ *                enum: [attending, notAttending, pending]
+ */
+router.get('/me/status', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
 

@@ -2,12 +2,25 @@ import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
 import { config } from '../../config/index'
 import { ok } from '../../helpers/response/success'
-import { subscription } from '../../helpers/subscription'
-import { checkAuthentication } from '../../middleware/authentication'
+// import { isAuthenticated } from '../../middleware/authentication'
 import { SSE } from '../../models/SSE'
+import { subscription } from '../../singletons/subscription'
 
 export const router = new KoaRouter()
 
+/**
+ * @swagger
+ * /build:
+ *   get:
+ *     description: Returns the server config
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *         schema:
+ *           type: object
+ */
 router.get('/build', async (ctx: Context) => {
   const { NODE_ENV } = process.env
   try {
@@ -27,15 +40,72 @@ router.get('/build', async (ctx: Context) => {
   }
 })
 
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     description: Health endpoint
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *         schema:
+ *           type: object
+ *           properties:
+ *              message:
+ *                type: string
+ *                enum: [ok, error]
+ */
 router.get('/health', (ctx: Context) => {
   ctx.body = ok()
 })
 
-router.post('/database', checkAuthentication('jwt'), (ctx: Context) => {
+/**
+ * @swagger
+ * /database:
+ *   get:
+ *     description: Logs database credentials to the console (Development mode only)
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Success Response
+ *         schema:
+ *           type: object
+ *           properties:
+ *              message:
+ *                type: string
+ *                enum: [ok]
+ */
+router.post('/database', (ctx: Context) => {
   console.log({ DATABASE: config.get('database') })
   ctx.body = ok()
 })
 
+/**
+ * @swagger
+ * /subscribe:
+ *   get:
+ *     description: Subscription url for broadcasted events
+ *     parameters:
+ *       - name: Authorization
+ *         in: header
+ *         description: 'Value must be of format: Bearer token_comes_here'
+ *         required: true
+ *         schema:
+ *           type: string
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: Returns an EventSource
+ *         headers:
+ *           X-Refresh-Token:
+ *             description: New extended token
+ *             schema:
+ *               type: string
+ */
 router.get('/subscribe', async ctx => {
   ctx.compress = false
   ctx.req.setTimeout(Number.MAX_VALUE, () => undefined)

@@ -15,6 +15,7 @@ import { Model } from './config/database'
 import { passport } from './helpers/authentication'
 import { errorHandler } from './middleware/error'
 import { router } from './router'
+import './utils/tasks'
 
 const sessionConfig = {
   key: config.get('session.key'),
@@ -60,8 +61,9 @@ app
     })
   )
   .listen(config.get('port'), async () => {
-    // console.log(router.stack)
+    console.log(router.stack)
     await Model.knex().migrate.latest()
+
     console.log('listening')
     console.log(config.get('database'))
   })
