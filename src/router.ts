@@ -1,8 +1,10 @@
+import { graphiqlKoa, graphqlKoa } from 'apollo-server-koa'
 import * as KoaRouter from 'koa-router'
 import * as koaSwagger from 'koa2-swagger-ui'
 import * as path from 'path'
 import * as swaggerJSDoc from 'swagger-jsdoc'
 import { router as controllers } from './controllers'
+import { schema } from './graphql/schema'
 
 const API_V1 = '/api'
 
@@ -41,3 +43,5 @@ router.get(
     }
   })
 )
+router.post('/graphql', graphqlKoa({ schema }))
+router.get('/graphql', graphiqlKoa({ endpointURL: '/api/graphql' }))

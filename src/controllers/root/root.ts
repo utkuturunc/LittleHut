@@ -2,7 +2,7 @@ import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
 import { config } from '../../config/index'
 import { ok } from '../../helpers/response/success'
-// import { isAuthenticated } from '../../middleware/authentication'
+import { isAuthenticated } from '../../middleware/authentication'
 import { SSE } from '../../models/SSE'
 import { subscription } from '../../singletons/subscription'
 
@@ -106,7 +106,7 @@ router.post('/database', (ctx: Context) => {
  *             schema:
  *               type: string
  */
-router.get('/subscribe', async ctx => {
+router.get('/subscribe', isAuthenticated, async ctx => {
   ctx.compress = false
   ctx.req.setTimeout(Number.MAX_VALUE, () => undefined)
   ctx.type = 'text/event-stream; charset=utf-8'

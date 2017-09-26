@@ -1,8 +1,8 @@
 import * as KoaRouter from 'koa-router'
-import { checkAuthentication } from '../../middleware/authentication'
+import { isAuthenticated } from '../../middleware/authentication'
 
 export const router = new KoaRouter()
 
-router.get('/', checkAuthentication('jwt'), ctx => {
+router.get('/', isAuthenticated, ctx => {
   ctx.body = ctx.state.user
 })
