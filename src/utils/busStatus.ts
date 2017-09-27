@@ -1,7 +1,10 @@
 import * as moment from 'moment'
-import { config } from '../config/index'
-const BUS_DEPARTUE_HOUR = config.get('bus.departure.hour')
-const BUS_DEPARTUE_MINUTE = config.get('bus.departure.minute')
+import { Moment } from 'moment'
+import { config } from '../config'
+const BUS_OFFICE_DEPARTURE_HOUR = config.get('bus.departure.hour')
+const BUS_OFFICE_DEPARTUE_MINUTE = config.get('bus.departure.minute')
+const BUS_LITTLE_HUT_DEPARTUE_HOUR = config.get('bus.departure.hour')
+const BUS_LITTLE_HUT_DEPARTUE_MINUTE = config.get('bus.departure.minute')
 export type BusStatus =
   | 'waitingForBus'
   | 'busHasArrived'
@@ -17,7 +20,8 @@ export const breakPoints = {
   waitingForBus: '06:00',
   busHasArrived: '11:45',
   busHasDeparted: '11:50',
-  bonAppetit: '12:20',
+  bonAppetit: '12:00',
+  waitingForBusFromLittleHut: '12:00',
   busIsWaiting: '12:45',
   busIsReturning: '12:50',
   checkTomorrow: '13:00',
@@ -40,29 +44,44 @@ export const getBusStatus = (): BusStatus => {
   if (breakPoints.waitingForBus <= nowTime && nowTime < breakPoints.busHasArrived) return 'waitingForBus'
   else if (breakPoints.busHasArrived <= nowTime && nowTime < breakPoints.busHasDeparted) return 'busHasArrived'
   else if (breakPoints.busHasDeparted <= nowTime && nowTime < breakPoints.bonAppetit) return 'busHasDeparted'
-  else if (breakPoints.bonAppetit <= nowTime && nowTime < breakPoints.busIsWaiting) return 'bonAppetit'
-  else if (breakPoints.busIsWaiting <= nowTime && nowTime < breakPoints.busIsReturning) return 'busIsWaiting'
-  else if (breakPoints.busIsReturning <= nowTime && nowTime < breakPoints.checkTomorrow) return 'busIsReturning'
+  else if (breakPoints.bonAppetit <= nowTime && nowTime < breakPoints.waitingForBusFromLittleHut) {
+    return 'bonAppetit'
+  } else if (breakPoints.waitingForBusFromLittleHut <= nowTime && nowTime < breakPoints.busIsWaiting) {
+    return 'waitingForBus'
+  } else if (breakPoints.busIsWaiting <= nowTime && nowTime < breakPoints.busIsReturning) {
+    return 'busIsWaiting'
+  } else if (breakPoints.busIsReturning <= nowTime && nowTime < breakPoints.checkTomorrow) return 'busIsReturning'
   else if (breakPoints.checkTomorrow <= nowTime && nowTime < breakPoints.endOfDay) return 'checkTomorrow'
   else return 'checkLater'
 }
 
-export const getRemainingTimeToBus = () => {
-  const now = moment()
-  const todayBusTime = moment()
-    .hours(BUS_DEPARTUE_HOUR)
-    .minutes(BUS_DEPARTUE_MINUTE)
-  const tomorrowBusTime = moment()
+const getNextBusTime = (time: Moment) => {
+  const todayBusOfficeDepartureTime = time.hours(BUS_OFFICE_DEPARTURE_HOUR).minutes(BUS_OFFICE_DEPARTUE_MINUTE)
+  const todayBusLittleHutDepartureTime = time
+    .hours(BUS_LITTLE_HUT_DEPARTUE_HOUR)
+    .minutes(BUS_LITTLE_HUT_DEPARTUE_MINUTE)
+  const tomorrowBusOfficeDepartureTime = time
     .add(1, 'day')
-    .hours(BUS_DEPARTUE_HOUR)
-    .minutes(BUS_DEPARTUE_MINUTE)
+    .hours(BUS_OFFICE_DEPARTURE_HOUR)
+    .minutes(BUS_OFFICE_DEPARTUE_MINUTE)
 
-  const busHasPassed = todayBusTime.isBefore(now)
+  const timeToDeparture = () => time.isBefore(todayBusOfficeDepartureTime)
+  const timeToWayBack = () => time.isBetween(todayBusOfficeDepartureTime, todayBusLittleHutDepartureTime)
+  const timeToTomorrowDeparture = () =>
+    time.isBetween(todayBusLittleHutDepartureTime, tomorrowBusOfficeDepartureTime)
 
-  const minutes = busHasPassed ? tomorrowBusTime.diff(now, 'minutes') : todayBusTime.diff(now, 'minutes')
+  if (timeToTomorrowDeparture()) return tomorrowBusOfficeDepartureTime
+  else if (timeToWayBack()) return todayBusLittleHutDepartureTime
+  else if (timeToDeparture()) return todayBusOfficeDepartureTime
+  else throw new Error('Invalid date')
+}
 
+export const getRemainingTimeToBus = (time: Moment) => {
+  const comparisonTime = getNextBusTime(time)
+  const minutes = comparisonTime.diff(time, 'minutes')
+  const hours = comparisonTime.diff(time, 'hours')
   return {
-    hours: busHasPassed ? tomorrowBusTime.diff(now, 'hours') : todayBusTime.diff(now, 'hours'),
+    hours,
     minutes: minutes % 60
   }
 }

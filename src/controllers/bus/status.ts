@@ -1,5 +1,6 @@
 import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
+import * as moment from 'moment'
 import { getBusStatus, getRemainingTimeToBus } from '../../utils/busStatus'
 
 export const router = new KoaRouter()
@@ -71,5 +72,5 @@ router.get('/', async (ctx: Context) => {
  *               type: integer
  */
 router.get('/remaining', async (ctx: Context) => {
-  ctx.body = getRemainingTimeToBus()
+  ctx.body = getRemainingTimeToBus(moment())
 })
