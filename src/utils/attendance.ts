@@ -13,24 +13,19 @@ interface AvatarData {
   avatar: string
 }
 
-export const getAttendance = async () => {
-  const attendance = await BusAttendance.todaysAttendance()
-  const statuses = mapKeys(
-    groupBy(attendance, 'isAttending'),
-    (value, key) => (key.toString() === 'true' ? 'attending' : 'notAttending')
-  )
+const getAvatars = async () => {
   const usersFromSlack = await slackClient.getAllActiveUsers()
-  const avatars = usersFromSlack.map<AvatarData>(user => ({
+  return usersFromSlack.map<AvatarData>(user => ({
     slackUserID: user.id,
     slackTeamID: user.team_id,
     avatar: user.profile.image_192
   }))
+}
 
-  const slackData = await Slack.list()
+const getAttendees = async () => {
+  const [avatars, slackData, activeUsers] = await Promise.all([getAvatars(), Slack.list(), User.getActiveUsers()])
 
-  const activeUsers = await User.getActiveUsers()
-
-  const users = slackData.map<Attendee>(slack => {
+  return slackData.map<Attendee>(slack => {
     const user = activeUsers.find(userData => userData.id === slack.userID)
     if (!user) throw new Error('One to one relation must always find a user')
     const avatarData = avatars.find(
@@ -45,7 +40,25 @@ export const getAttendance = async () => {
       avatar: avatarData ? avatarData.avatar : null
     }
   })
+}
 
+interface Statuses {
+  attending: BusAttendance[]
+  notAttending: BusAttendance[]
+}
+
+export interface AttendeeStatuses {
+  pending: Attendee[]
+  notAttending: Attendee[]
+  attending: Attendee[]
+}
+
+export const getAttendance = async (): Promise<AttendeeStatuses> => {
+  const [users, attendance] = await Promise.all([getAttendees(), BusAttendance.todaysAttendance()])
+  const statuses: Statuses = mapKeys(
+    groupBy(attendance, 'isAttending'),
+    (value, key) => (key.toString() === 'true' ? 'attending' : 'notAttending')
+  ) as any
   const attendingIDs = statuses.attending ? statuses.attending.map(element => element.userID) : []
   const notAttendingIDs = statuses.notAttending ? statuses.notAttending.map(element => element.userID) : []
   const attending = users.filter(statusFilter(attendingIDs))

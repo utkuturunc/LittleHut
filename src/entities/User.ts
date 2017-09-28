@@ -70,22 +70,22 @@ export class User extends BaseModel implements IUserConstructor {
     }
   }
 
-  static async create(user: User) {
-    return await User.query().insert(user)
+  static create(user: User) {
+    return User.query().insert(user)
   }
 
-  static async findByID(id: string) {
+  static findByID(id: string) {
     return User.query().findById(id)
   }
 
-  static async findByEmail(email: string) {
+  static findByEmail(email: string) {
     return User.query()
       .where('email', '=', email)
       .first()
   }
 
-  static async list() {
-    return await User.query()
+  static list() {
+    return User.query()
   }
 
   static getActiveUsers() {

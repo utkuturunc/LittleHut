@@ -87,7 +87,7 @@ router.get('/', async (ctx: Context) => {
 router.post('/', async (ctx: Context) => {
   const user: User = ctx.state.user
   const attendance = await BusAttendance.getUserResponseForToday(user)
-  const today = moment()
+  const today = moment().utcOffset(3)
 
   if (!ctx.request.body) throw new Error('Validation error')
   const isAttending = ctx.request.body.isAttending

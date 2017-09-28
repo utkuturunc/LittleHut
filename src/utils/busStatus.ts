@@ -29,7 +29,8 @@ export const breakPoints = {
 }
 
 export const getBusStatus = (): BusStatus => {
-  const now = moment()
+  const now = moment().utcOffset(3)
+  console.log(now.format('HH:mm'))
   const nowDay = now.day()
   const nowTime = now.format('HH:mm')
 
@@ -56,11 +57,16 @@ export const getBusStatus = (): BusStatus => {
 }
 
 const getNextBusTime = (time: Moment) => {
-  const todayBusOfficeDepartureTime = time.hours(BUS_OFFICE_DEPARTURE_HOUR).minutes(BUS_OFFICE_DEPARTUE_MINUTE)
+  const todayBusOfficeDepartureTime = time
+    .clone()
+    .hours(BUS_OFFICE_DEPARTURE_HOUR)
+    .minutes(BUS_OFFICE_DEPARTUE_MINUTE)
   const todayBusLittleHutDepartureTime = time
+    .clone()
     .hours(BUS_LITTLE_HUT_DEPARTUE_HOUR)
     .minutes(BUS_LITTLE_HUT_DEPARTUE_MINUTE)
   const tomorrowBusOfficeDepartureTime = time
+    .clone()
     .add(1, 'day')
     .hours(BUS_OFFICE_DEPARTURE_HOUR)
     .minutes(BUS_OFFICE_DEPARTUE_MINUTE)
