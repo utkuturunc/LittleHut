@@ -28,6 +28,6 @@ const BusType = `
 
 export const resolvers = {
   status: () => getBusStatus(),
-  remainingTime: () => getRemainingTimeToBus(moment().utcOffset(3))
+  remainingTime: () => getRemainingTimeToBus(moment())
 }
 export default () => [BusType]

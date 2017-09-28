@@ -13,16 +13,32 @@ const conf = convict({
     env: 'NODE_ENV'
   },
   bus: {
-    departure: {
-      hour: {
-        format: 'int',
-        default: 11,
-        env: 'BUS_DEPARTURE_HOUR'
-      },
-      minute: {
-        format: 'int',
-        default: 50,
-        env: 'BUS_DEPARTURE_MINUTE'
+    office: {
+      departure: {
+        hour: {
+          format: 'int',
+          default: 8,
+          env: 'BUS_OFFICE_DEPARTURE_HOUR'
+        },
+        minute: {
+          format: 'int',
+          default: 50,
+          env: 'BUS_OFFICE_DEPARTURE_MINUTE'
+        }
+      }
+    },
+    littleHut: {
+      departure: {
+        hour: {
+          format: 'int',
+          default: 9,
+          env: 'BUS_LITTLE_HUT_DEPARTURE_HOUR'
+        },
+        minute: {
+          format: 'int',
+          default: 50,
+          env: 'BUS_LITTLE_HUT_DEPARTURE_MINUTE'
+        }
       }
     }
   },

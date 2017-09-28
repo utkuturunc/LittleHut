@@ -1,10 +1,10 @@
 import * as moment from 'moment'
 import { Moment } from 'moment'
 import { config } from '../config'
-const BUS_OFFICE_DEPARTURE_HOUR = config.get('bus.departure.hour')
-const BUS_OFFICE_DEPARTUE_MINUTE = config.get('bus.departure.minute')
-const BUS_LITTLE_HUT_DEPARTUE_HOUR = config.get('bus.departure.hour')
-const BUS_LITTLE_HUT_DEPARTUE_MINUTE = config.get('bus.departure.minute')
+const BUS_OFFICE_DEPARTURE_HOUR = config.get('bus.office.departure.hour')
+const BUS_OFFICE_DEPARTUE_MINUTE = config.get('bus.office.departure.minute')
+const BUS_LITTLE_HUT_DEPARTUE_HOUR = config.get('bus.littleHut.departure.hour')
+const BUS_LITTLE_HUT_DEPARTUE_MINUTE = config.get('bus.littleHut.departure.minute')
 export type BusStatus =
   | 'waitingForBus'
   | 'busHasArrived'
@@ -17,20 +17,19 @@ export type BusStatus =
   | 'checkLater'
 
 export const breakPoints = {
-  waitingForBus: '06:00',
-  busHasArrived: '11:45',
-  busHasDeparted: '11:50',
-  bonAppetit: '12:00',
-  waitingForBusFromLittleHut: '12:00',
-  busIsWaiting: '12:45',
-  busIsReturning: '12:50',
-  checkTomorrow: '13:00',
-  endOfDay: '23:59'
+  waitingForBus: '03:00',
+  busHasArrived: '08:45',
+  busHasDeparted: '08:50',
+  bonAppetit: '09:00',
+  waitingForBusFromLittleHut: '09:20',
+  busIsWaiting: '09:45',
+  busIsReturning: '09:50',
+  checkTomorrow: '10:00',
+  endOfDay: '20:59'
 }
 
 export const getBusStatus = (): BusStatus => {
-  const now = moment().utcOffset(3)
-  console.log(now.format('HH:mm'))
+  const now = moment()
   const nowDay = now.day()
   const nowTime = now.format('HH:mm')
 

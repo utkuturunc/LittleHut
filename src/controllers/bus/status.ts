@@ -72,5 +72,5 @@ router.get('/', async (ctx: Context) => {
  *               type: integer
  */
 router.get('/remaining', async (ctx: Context) => {
-  ctx.body = getRemainingTimeToBus(moment().utcOffset(3))
+  ctx.body = getRemainingTimeToBus(moment())
 })
