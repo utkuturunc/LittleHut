@@ -3,23 +3,28 @@ import { slackClient } from '../clients'
 import { Slack, User } from '../entities'
 import { BusAttendance } from '../entities/BusAttendance'
 import { Attendee } from '../models/misc'
+import { avatarCache } from '../singletons/avatarCache'
 
 const statusFilter = (list: string[]) => (user: Attendee) => includes(list, user.id)
 const pendingFilter = (nonPendingList: string[]) => (user: Attendee) => !includes(nonPendingList, user.id)
 
-interface AvatarData {
+export interface AvatarData {
   slackUserID: string
   slackTeamID: string
   avatar: string
 }
 
-const getAvatars = async () => {
+export const getAvatars = async () => {
+  const avatarsFromCache = avatarCache.get()
+  if (avatarsFromCache) return avatarsFromCache
   const usersFromSlack = await slackClient.getAllActiveUsers()
-  return usersFromSlack.map<AvatarData>(user => ({
+  const avatars = usersFromSlack.map<AvatarData>(user => ({
     slackUserID: user.id,
     slackTeamID: user.team_id,
     avatar: user.profile.image_192
   }))
+  avatarCache.set(avatars)
+  return avatars
 }
 
 const getAttendees = async () => {
