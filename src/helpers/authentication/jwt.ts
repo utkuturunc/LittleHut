@@ -1,10 +1,9 @@
 import { sign, SignOptions, verify } from 'jsonwebtoken'
-import { Context } from 'koa'
 import { Strategy as JWTStrategy } from 'passport-jwt'
 import { config } from '../../config'
 import { User } from '../../entities'
 
-const cookieExtractor = (ctx: Context) => {
+const cookieExtractor = (ctx: any) => {
     if (ctx.cookies.get('_jwt')) {
       return ctx.cookies.get('_jwt')
     } else {
@@ -13,7 +12,7 @@ const cookieExtractor = (ctx: Context) => {
 }
 
 const jwtOptions = {
-  jwtFromRequest: cookieExtractor,
+  jwtFromRequest: cookieExtractor as any,
   secretOrKey: config.get('jwt.secret'),
   issuer: config.get('jwt.issuer'),
   audience: config.get('jwt.audience')
