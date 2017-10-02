@@ -15,6 +15,7 @@ export const authenticate: (strategy: string) => Middleware = strategy => (ctx, 
             token,
             user
           }
+          ctx.cookies.set('_jwt', token)
         })
       }
       throw unauthorized(info && info.message)
