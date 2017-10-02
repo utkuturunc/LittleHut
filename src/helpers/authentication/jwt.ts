@@ -3,8 +3,16 @@ import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt'
 import { config } from '../../config'
 import { User } from '../../entities'
 
+const cookieExtractor = (ctx) => {
+    if (ctx.cookies.get('_jwt')) {
+      return ctx.cookies.get('_jwt');
+    } else {
+      return ctx.header.authorization;
+    }
+}
+
 const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: cookieExtractor,
   secretOrKey: config.get('jwt.secret'),
   issuer: config.get('jwt.issuer'),
   audience: config.get('jwt.audience')
