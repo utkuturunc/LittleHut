@@ -33,6 +33,7 @@ export const checkAuthentication: (strategy: string) => Middleware = strategy =>
         ctx.state.user = user
         return user.generateJWT('authentication').then(token => {
           ctx.set('X-Refresh-Token', token)
+          ctx.cookies.set('_jwt', token)
           return next()
         })
       }
