@@ -1,13 +1,14 @@
 import { sign, SignOptions, verify } from 'jsonwebtoken'
-import { ExtractJwt, Strategy as JWTStrategy } from 'passport-jwt'
+import { Context } from 'koa'
+import { Strategy as JWTStrategy } from 'passport-jwt'
 import { config } from '../../config'
 import { User } from '../../entities'
 
-const cookieExtractor = (ctx) => {
+const cookieExtractor = (ctx: Context) => {
     if (ctx.cookies.get('_jwt')) {
-      return ctx.cookies.get('_jwt');
+      return ctx.cookies.get('_jwt')
     } else {
-      return ctx.header.authorization;
+      return ctx.header.authorization
     }
 }
 
