@@ -1,2 +1,6 @@
 export * from './SlackClient'
+export * from './EventManager'
+export * from './SimpleCache'
+export * from './SSE'
+export * from './Subscription'
 export * from './misc'

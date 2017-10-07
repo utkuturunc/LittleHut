@@ -1,10 +1,8 @@
 import { Context } from 'koa'
 import * as KoaRouter from 'koa-router'
-import * as moment from 'moment'
 import { User } from '../../entities'
 import { BusAttendance } from '../../entities/BusAttendance'
-import { subscription } from '../../singletons/subscription'
-import { getAttendance } from '../../utils/attendance'
+import { getAttendance, getUserStatusText, setBusAttendance } from '../../utils/attendance'
 
 export const router = new KoaRouter()
 
@@ -86,24 +84,9 @@ router.get('/', async (ctx: Context) => {
  */
 router.post('/', async (ctx: Context) => {
   const user: User = ctx.state.user
-  const attendance = await BusAttendance.getUserResponseForToday(user)
-  const today = moment()
-
   if (!ctx.request.body) throw new Error('Validation error')
   const isAttending = ctx.request.body.isAttending
-
-  if (!attendance) {
-    if (!user.id) throw new Error('Unexpected error')
-    const newAttendance = await BusAttendance.create({ userID: user.id, isAttending, date: today })
-    subscription.publish('userStatusUpdated', getAttendance())
-    ctx.body = newAttendance
-    return
-  } else {
-    const newAttendance = await BusAttendance.update({ ...attendance, isAttending })
-    subscription.publish('userStatusUpdated', getAttendance())
-    ctx.body = newAttendance
-    return
-  }
+  ctx.body = await setBusAttendance(user, isAttending)
 })
 
 /**
@@ -170,16 +153,8 @@ router.get('/me', async (ctx: Context) => {
  */
 router.get('/me/status', async (ctx: Context) => {
   const user: User = ctx.state.user
-  const attendance = await BusAttendance.getUserResponseForToday(user)
-
-  if (!attendance) {
-    ctx.body = {
-      attendance: 'pending'
-    }
-    return
-  }
 
   ctx.body = {
-    attendance: attendance.isAttending ? 'attending' : 'notAttending'
+    attendance: getUserStatusText(user)
   }
 })

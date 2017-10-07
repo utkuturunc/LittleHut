@@ -5,6 +5,8 @@ import * as path from 'path'
 import * as swaggerJSDoc from 'swagger-jsdoc'
 import { router as controllers } from './controllers'
 import { schema } from './graphql/schema'
+import { GraphQLContext } from './helpers/types'
+import { isAuthenticated } from './middleware/authentication'
 
 const API_V1 = '/api'
 
@@ -43,5 +45,21 @@ router.get(
     }
   })
 )
-router.post('/graphql', graphqlKoa({ schema }))
-router.get('/graphql', graphiqlKoa({ endpointURL: '/api/graphql' }))
+
+router.post(
+  '/graphql',
+  isAuthenticated,
+  graphqlKoa(ctx => {
+    return {
+      schema,
+      context: { user: ctx.state.user } as GraphQLContext
+    }
+  })
+)
+router.get(
+  '/graphql',
+  graphiqlKoa({
+    endpointURL: '/api/graphql',
+    subscriptionsEndpoint: `ws://little.hut:2000/api/subscriptions`
+  })
+)

@@ -4,11 +4,11 @@ import { config } from '../../config'
 import { User } from '../../entities'
 
 const cookieExtractor = (ctx: any) => {
-    if (ctx.cookies.get('_jwt')) {
-      return ctx.cookies.get('_jwt')
-    } else {
-      return ctx.header.authorization
-    }
+  if (ctx.cookies.get('_jwt')) {
+    return ctx.cookies.get('_jwt')
+  } else {
+    return ctx.header.authorization.replace('Bearer ', '')
+  }
 }
 
 const jwtOptions = {

@@ -4,7 +4,7 @@ import { config } from '../../config/index'
 import { ok } from '../../helpers/response/success'
 import { isAuthenticated } from '../../middleware/authentication'
 import { SSE } from '../../models/SSE'
-import { subscription } from '../../singletons/subscription'
+import { events } from '../../singletons/events'
 
 export const router = new KoaRouter()
 
@@ -112,6 +112,8 @@ router.get('/subscribe', isAuthenticated, async ctx => {
   ctx.type = 'text/event-stream; charset=utf-8'
   ctx.set('Cache-Control', 'no-cache')
   ctx.set('Connection', 'keep-alive')
+
+  const subscription = events.getSubscription()
 
   const body = new SSE()
 

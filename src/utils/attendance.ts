@@ -1,9 +1,13 @@
 import { groupBy, includes, mapKeys } from 'lodash'
+import { Moment } from 'moment'
+import * as moment from 'moment'
 import { slackClient } from '../clients'
 import { Slack, User } from '../entities'
 import { BusAttendance } from '../entities/BusAttendance'
+import { Events } from '../models'
 import { Attendee } from '../models/misc'
 import { avatarCache } from '../singletons/avatarCache'
+import { events } from '../singletons/events'
 
 const statusFilter = (list: string[]) => (user: Attendee) => includes(list, user.id)
 const pendingFilter = (nonPendingList: string[]) => (user: Attendee) => !includes(nonPendingList, user.id)
@@ -73,5 +77,25 @@ export const getAttendance = async (): Promise<AttendeeStatuses> => {
     attending,
     notAttending,
     pending
+  }
+}
+
+export const getUserStatusText = async (user: User) => {
+  const attendance = await BusAttendance.getUserResponseForToday(user)
+  if (!attendance) return 'pending'
+  return attendance.isAttending ? 'attending' : 'notAttending'
+}
+
+export const setBusAttendance = async (user: User, isAttending: boolean, date: Moment = moment()) => {
+  const attendance = await BusAttendance.getUserResponseForToday(user)
+  if (!attendance) {
+    if (!user.id) throw new Error('Unexpected error')
+    const newAttendance = await BusAttendance.create({ userID: user.id, isAttending, date })
+    events.publish(Events.userStatusUpdated, getAttendance())
+    return newAttendance
+  } else {
+    const newAttendance = await BusAttendance.update({ ...attendance, isAttending })
+    events.publish(Events.userStatusUpdated, getAttendance())
+    return newAttendance
   }
 }

@@ -26,3 +26,9 @@ export interface Attendee {
   email: string
   avatar: string | null
 }
+
+export enum Events {
+  userStatusUpdated = 'userStatusUpdated',
+  remainingTimeToBus = 'remainingTimeToBus',
+  busStatus = 'busStatus'
+}

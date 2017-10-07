@@ -1,4 +1,6 @@
 import { methodNotAllowed, notImplemented } from 'boom'
+import { execute, subscribe } from 'graphql'
+import { createServer } from 'http'
 import * as cors from 'kcors'
 import * as Koa from 'koa'
 import * as KoaBetterBody from 'koa-better-body'
@@ -10,8 +12,11 @@ import * as mount from 'koa-mount'
 import * as session from 'koa-session'
 import * as serve from 'koa-static'
 import * as qs from 'qs'
+import 'source-map-support'
+import { SubscriptionServer } from 'subscriptions-transport-ws'
 import { config } from './config'
 import { Model } from './config/database'
+import { schema } from './graphql/schema'
 import { passport } from './helpers/authentication'
 import { errorHandler } from './middleware/error'
 import { router } from './router'
@@ -60,10 +65,26 @@ app
       methodNotAllowed: () => methodNotAllowed()
     })
   )
-  .listen(config.get('port'), async () => {
-    console.log(router.stack)
-    await Model.knex().migrate.latest()
 
-    console.log('listening')
-    console.log(config.get('database'))
-  })
+const server = createServer(app.callback()).listen(config.get('port'), async () => {
+  // console.log(router.stack)
+
+  // tslint:disable
+  new SubscriptionServer(
+    {
+      execute,
+      subscribe,
+      schema
+    },
+    {
+      server,
+      path: '/api/subscriptions'
+    }
+  )
+  // tslint:enable
+
+  await Model.knex().migrate.latest()
+
+  console.log('listening')
+  console.log(config.get('database'))
+})
