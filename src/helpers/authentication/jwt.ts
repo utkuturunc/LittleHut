@@ -7,7 +7,7 @@ const cookieExtractor = (ctx: any) => {
   if (ctx.cookies.get('_jwt')) {
     return ctx.cookies.get('_jwt')
   } else {
-    return ctx.header.authorization.replace('Bearer ', '')
+    return ctx.header.authorization && ctx.header.authorization.replace('Bearer ', '')
   }
 }
 
